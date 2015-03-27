@@ -113,15 +113,14 @@ f_check(mrb_state *mrb, mrb_value self)
 
   get_i2c(chval);
 
-  sscanf(chval, "%*f%lf%lf", &y, &x);
-
-printf("%f %f", x, y);
+  sscanf(chval, "%*f%lf%lf", &x, &y);
+printf("%f %f\n", x, y);
 
   y0 = (-0.1714) * x + 45.14;
   if( y > y0 ){
     value = 2;
   } else {
-    y0 = (-0.5) * x + 27;
+    y0 = (-0.15) * x + 37;
     if( y > y0 ){
       value = 1;
     } else {
