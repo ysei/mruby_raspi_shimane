@@ -23,7 +23,7 @@ f_gpio_pinmode(mrb_state *mrb, mrb_value self)
 static mrb_value
 f_gpio_dwrite(mrb_state *mrb, mrb_value self)
 {
-  char buf[100], *val_str;
+  char buf[100];
   mrb_int pin, value;
   mrb_get_args(mrb, "ii", &pin, &value);
 
@@ -43,6 +43,7 @@ f_gpio_dread(mrb_state *mrb, mrb_value self)
   int value = 0;    /* dummy value */
   mrb_int pin;
   char buf[100], chval[100];
+  FILE *fval;
 
   mrb_get_args(mrb, "i", &pin);
 
@@ -53,7 +54,7 @@ f_gpio_dread(mrb_state *mrb, mrb_value self)
 
   value = atoi(chval);
 
-  return mrb_fixnum_value(_val);
+  return mrb_fixnum_value(value);
 }
 
 void
