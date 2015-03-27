@@ -116,6 +116,8 @@ f_check(mrb_state *mrb, mrb_value self)
 
   sscanf(chval, "%*f%lf%lf", &y, &x);
 
+printf("%f %f", x, y);
+
   y0 = (-0.1714) * x + 45.14;
   if( y > y0 ){
     value = 2;
