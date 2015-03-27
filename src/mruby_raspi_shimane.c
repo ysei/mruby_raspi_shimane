@@ -71,26 +71,61 @@ f_sleep(mrb_state *mrb, mrb_value self)
   return mrb_nil_value();
 }
 
-static mrb_value
-f_sensor(mrb_state *mrb, mrb_value self)
+static void
+get_i2c(char *chval)
 {
-  char buf[100], chval[100];
+  char buf[100];
   FILE *fval;
-  mrb_int sensor;
-  double s0, s1, s2, value;
-  mrb_get_args(mrb, "i", &sensor);
 
   sprintf(buf, "sudo python temp.py");
   fval=popen(buf, "r");
   fgets(chval,sizeof(chval),fval);
   pclose(fval);
+}
 
-  sscanf(chval, "%lf%lf%lf", &s0, &s1, &s2);
+
+static mrb_value
+f_sensor(mrb_state *mrb, mrb_value self)
+{
+  char chval[100];
+  mrb_int sensor, value;
+  double s1, s2;
+  mrb_get_args(mrb, "i", &sensor);
+
+  get_i2c(chval);
+
+  sscanf(chval, "%*f%lf%lf", &s1, &s2);
 
   if( sensor == 1 ){
     value = s1;
   } else {
     value = s2;
+  }
+
+  return mrb_fixnum_value(value);
+}
+
+static mrb_value
+f_check(mrb_state *mrb, mrb_value self)
+{
+  char chval[100];
+  mrb_int value;
+  double x, y, y0;
+
+  get_i2c(chval);
+
+  sscanf(chval, "%*f%lf%lf", &y, &x);
+
+  y0 = (-0.1714) * x + 45.14;
+  if( y > y0 ){
+    value = 2;
+  } else {
+    y0 = (-0.5) * x + 27;
+    if( y > y0 ){
+      value = 1;
+    } else {
+      value = 0;
+    }
   }
 
   return mrb_fixnum_value(value);
@@ -116,6 +151,7 @@ mrb_mruby_raspi_shimane_gem_init(mrb_state* mrb)
   mrb_define_module_function(mrb, c, "sleep", f_sleep, MRB_ARGS_REQ(1));
 
   mrb_define_module_function(mrb, c, "sensor", f_sensor, MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, c, "check", f_check, MRB_ARGS_NONE());
 }
 
 void
