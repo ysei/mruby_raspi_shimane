@@ -15,7 +15,6 @@ f_gpio_pinmode(mrb_state *mrb, mrb_value self)
     dir_str = "input";
   }
   sprintf(buf, "set %s to port %d", dir_str, pin);
-  puts(buf);
 
   return mrb_nil_value();
 }
@@ -79,7 +78,7 @@ get_i2c(char *chval)
 
   sprintf(buf, "sudo python temp.py");
   fval=popen(buf, "r");
-  fgets(chval,sizeof(chval),fval);
+  fgets(chval,100,fval);
   pclose(fval);
 }
 
@@ -87,7 +86,7 @@ get_i2c(char *chval)
 static mrb_value
 f_sensor(mrb_state *mrb, mrb_value self)
 {
-  char chval[100];
+  char chval[101];
   mrb_int sensor, value;
   double s1, s2;
   mrb_get_args(mrb, "i", &sensor);
@@ -108,7 +107,7 @@ f_sensor(mrb_state *mrb, mrb_value self)
 static mrb_value
 f_check(mrb_state *mrb, mrb_value self)
 {
-  char chval[100];
+  char chval[101];
   mrb_int value;
   double x, y, y0;
 
